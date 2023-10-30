@@ -51,7 +51,7 @@ def main():
                 # exit_code = event['Actor']['Attributes']['exitCode']
 
                 if(container_id in containers.keys()):
-                    print(f"mavlink コンテナ {container_id} が終了しました")
+                    # print(f"mavlink コンテナ {container_id} が終了しました")
 
                     mavlink_container_id = containers[container_id][0]
                     sitl_container_id = containers[container_id][1]
