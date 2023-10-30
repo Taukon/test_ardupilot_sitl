@@ -42,7 +42,7 @@ def run_containers(client, len):
 
 def main():
     client = docker.from_env()
-    len = 10
+    len = 30
     print(f"start integrate {len} containers")
 
     containers = run_containers(client, len)
