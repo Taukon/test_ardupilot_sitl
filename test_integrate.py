@@ -1,8 +1,14 @@
 import docker
 
-def check_container(containers, container_id):
+def check_container_ip(client, containers, container):
+
     for v in containers.values():
-        if v[0] == container_id | v[1] == container_id:
+        mavlink_ip = client.containers.get(v[0]).attrs['NetworkSettings']['IPAddress']
+        if mavlink_ip == container.attrs['NetworkSettings']['IPAddress']:
+            return False
+        
+        sitl_ip = client.containers.get(v[1]).attrs['NetworkSettings']['IPAddress']
+        if sitl_ip == container.attrs['NetworkSettings']['IPAddress']:
             return False
         
     return True
@@ -14,20 +20,24 @@ def run_containers(client, len):
 
     for num in range(len):
         mavlink_container_id = client.containers.run("test_mavlink", ["python", "measure_square.py"], detach=True).id
-        while check_container(containers, mavlink_container_id) == False:
-            mavlink_container_id = client.containers.run("test_mavlink", ["python", "measure_square.py"], detach=True).id
-
         mavlink_container = client.containers.get(mavlink_container_id)
+        while check_container_ip(client, containers, mavlink_container) == False:
+            mavlink_container_id = client.containers.run("test_mavlink", ["python", "measure_square.py"], detach=True).id
+            mavlink_container = client.containers.get(mavlink_container_id)
+
         # mavlink コンテナのIPアドレスを取得
         mavlink_container_ip = mavlink_container.attrs['NetworkSettings']['IPAddress']
         # print(f"mavlink コンテナのIPアドレス: {mavlink_container_ip}")
 
-        command = f'bash -c "(SITL_RITW_TERMINAL=bash /ardupilot/Tools/autotest/sim_vehicle.py -v ArduCopter --no-mavproxy --sim-address=$(hostname -i) &) | .local/bin/mavproxy.py  --out {mavlink_container_ip}:14551 --master tcp:$(hostname -i):5760 --sitl $(hostname -i):5501"'
+
+        # command = f'bash -c "(SITL_RITW_TERMINAL=bash /ardupilot/Tools/autotest/sim_vehicle.py -v ArduCopter --no-mavproxy --sim-address=$(hostname -i) &) | .local/bin/mavproxy.py  --out {mavlink_container_ip}:14551 --master tcp:$(hostname -i):5760 --sitl $(hostname -i):5501"'
+        command = f'bash -c "(SITL_RITW_TERMINAL=bash /ardupilot/Tools/autotest/sim_vehicle.py -v ArduCopter --no-mavproxy &) | .local/bin/mavproxy.py  --out {mavlink_container_ip}:14551 --master tcp:127.0.0.1:5760 --sitl 127.0.0.1:5501"'
         sitl_container_id = client.containers.run("test_ardupilot_sitl_gui", command, tty=True, detach=True).id
-        while check_container(containers, sitl_container_id) == False:
-            sitl_container_id = client.containers.run("test_ardupilot_sitl_gui", command, tty=True, detach=True).id
-        
         sitl_container = client.containers.get(sitl_container_id)
+        while check_container_ip(client, containers, sitl_container) == False:
+            sitl_container_id = client.containers.run("test_ardupilot_sitl_gui", command, tty=True, detach=True).id
+            sitl_container = client.containers.get(sitl_container_id)
+            
         # sitl コンテナのIPアドレスを取得
         sitl_container_ip = sitl_container.attrs['NetworkSettings']['IPAddress']
         # print(f"sitl コンテナのIPアドレス: {sitl_container_ip}")
