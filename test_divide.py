@@ -71,6 +71,7 @@ def main():
 
                     count = count + 1
                     if count == len:
+                        print(f"end {len} mavlink containers")
                         break
 
     except KeyboardInterrupt:
@@ -88,10 +89,6 @@ def main():
         pass
     finally:
         events.close()
-        for container_id in containers:
-            mavlink_container_id = containers[container_id][0]
-            client.containers.get(mavlink_container_id).stop()
-            client.containers.get(mavlink_container_id).remove()
         print(f"end divide {len} containers")
             
 
