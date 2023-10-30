@@ -1,17 +1,30 @@
 import docker
 
+def check_container(containers, container_id):
+    for v in containers.values():
+        if v[0] == container_id | v[1] == container_id | v[2] == container_id:
+            return False
+        
+    return True
+
 def run_containers(client, len):
 
     containers = {}
 
     for num in range(len):
         mavlink_container_id = client.containers.run("test_mavlink", ["python", "measure_square.py"], detach=True).id
+        # while check_container(containers, mavlink_container_id) == False:
+        #     mavlink_container_id = client.containers.run("test_mavlink", ["python", "measure_square.py"], detach=True).id
+
         mavlink_container = client.containers.get(mavlink_container_id)
         # mavlink コンテナのIPアドレスを取得
         mavlink_container_ip = mavlink_container.attrs['NetworkSettings']['IPAddress']
         # print(f"mavlink コンテナのIPアドレス: {mavlink_container_ip}")
 
         sitl_container_id = client.containers.run("test_ardupilot_sitl", detach=True).id
+        # while check_container(containers, sitl_container_id) == False:
+        #     sitl_container_id = client.containers.run("test_ardupilot_sitl", detach=True).id
+
         sitl_container = client.containers.get(sitl_container_id)
         # sitl コンテナのIPアドレスを取得
         sitl_container_ip = sitl_container.attrs['NetworkSettings']['IPAddress']
@@ -20,6 +33,9 @@ def run_containers(client, len):
 
         command = f'.local/bin/mavproxy.py  --out {mavlink_container_ip}:14551 --master tcp:{sitl_container_ip}:5760 --sitl {sitl_container_ip}:5501'
         mavproxy_container_id = client.containers.run("test_mavproxy", command, tty=True, detach=True).id
+        # while check_container(containers, mavproxy_container_id) == False:
+        #     mavproxy_container_id = client.containers.run("test_mavproxy", command, tty=True, detach=True).id
+
         mavproxy_container = client.containers.get(mavproxy_container_id)
         # mavproxy コンテナのIPアドレスを取得
         mavproxy_container_ip = mavproxy_container.attrs['NetworkSettings']['IPAddress']
