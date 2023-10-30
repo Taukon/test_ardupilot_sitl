@@ -75,5 +75,5 @@ CMD ["bash", "-c", "SITL_RITW_TERMINAL=bash /ardupilot/Tools/autotest/sim_vehicl
 
 # SITL_RITW_TERMINAL=bash sim_vehicle.py -v ArduCopter --no-mavproxy --sim-address=$(hostname -i)
 
-# docker build . -t test_sitl
-# docker run --rm test_sitl
+# docker build . -t test_ardupilot_sitl
+# docker run --rm test_ardupilot_sitl

@@ -113,7 +113,7 @@ ENV DISPLAY=:1
 
 CMD ["bash", "-c", "SITL_RITW_TERMINAL=bash /ardupilot/Tools/autotest/sim_vehicle.py -v ArduCopter --no-mavproxy --sim-address=$(hostname -i)"]
 
-# docker build . -t test_sitl_gui
-# docker run --rm -p 5900:5900 -it test_sitl_gui
-# docker run --rm -it test_sitl_gui bash -c ".local/bin/mavproxy.py  --out 172.17.0.3:14551 --master tcp:$(hostname -i):5760 --sitl $(hostname -i):5501"
-# docker run --rm -it test_sitl_gui bash -c "(SITL_RITW_TERMINAL=bash /ardupilot/Tools/autotest/sim_vehicle.py -v ArduCopter --no-mavproxy --sim-address=$(hostname -i) &) | .local/bin/mavproxy.py  --out 172.17.0.3:14551 --master tcp:$(hostname -i):5760 --sitl $(hostname -i):5501"
+# docker build . -t test_ardupilot_sitl_gui
+# docker run --rm -p 5900:5900 -it test_ardupilot_sitl_gui
+# docker run --rm -it test_ardupilot_sitl_gui bash -c ".local/bin/mavproxy.py  --out 172.17.0.3:14551 --master tcp:$(hostname -i):5760 --sitl $(hostname -i):5501"
+# docker run --rm -it test_ardupilot_sitl_gui bash -c "(SITL_RITW_TERMINAL=bash /ardupilot/Tools/autotest/sim_vehicle.py -v ArduCopter --no-mavproxy --sim-address=$(hostname -i) &) | .local/bin/mavproxy.py  --out 172.17.0.3:14551 --master tcp:$(hostname -i):5760 --sitl $(hostname -i):5501"

@@ -11,7 +11,7 @@ def run_containers(client, len):
         mavlink_container_ip = mavlink_container.attrs['NetworkSettings']['IPAddress']
         # print(f"mavlink コンテナのIPアドレス: {mavlink_container_ip}")
 
-        sitl_container_id = client.containers.run("test_sitl", detach=True).id
+        sitl_container_id = client.containers.run("test_ardupilot_sitl", detach=True).id
         sitl_container = client.containers.get(sitl_container_id)
         # sitl コンテナのIPアドレスを取得
         sitl_container_ip = sitl_container.attrs['NetworkSettings']['IPAddress']

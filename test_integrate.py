@@ -12,7 +12,7 @@ def run_containers(client, len):
         # print(f"mavlink コンテナのIPアドレス: {mavlink_container_ip}")
 
         command = f'bash -c "(SITL_RITW_TERMINAL=bash /ardupilot/Tools/autotest/sim_vehicle.py -v ArduCopter --no-mavproxy --sim-address=$(hostname -i) &) | .local/bin/mavproxy.py  --out {mavlink_container_ip}:14551 --master tcp:$(hostname -i):5760 --sitl $(hostname -i):5501"'
-        sitl_container_id = client.containers.run("test_sitl_gui", command, tty=True, detach=True).id
+        sitl_container_id = client.containers.run("test_ardupilot_sitl_gui", command, tty=True, detach=True).id
         sitl_container = client.containers.get(sitl_container_id)
         # sitl コンテナのIPアドレスを取得
         sitl_container_ip = sitl_container.attrs['NetworkSettings']['IPAddress']
