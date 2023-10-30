@@ -34,7 +34,7 @@ def run_containers(client, len):
 
 def main():
     client = docker.from_env()
-    len = 20
+    len = 10
     print(f"start divide {len} containers")
 
     containers = run_containers(client, len)
