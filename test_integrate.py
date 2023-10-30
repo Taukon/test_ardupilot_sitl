@@ -28,7 +28,7 @@ def run_containers(client, len):
 
 def main():
     client = docker.from_env()
-    len = 2
+    len = 20
     print(f"start integrate {len} containers")
 
     containers = run_containers(client, len)
@@ -55,6 +55,8 @@ def main():
                     mavlink_container_ip = mavlink_container.attrs['NetworkSettings']['IPAddress']
                     print(f"{mavlink_container_ip}: {client.containers.get(mavlink_container_id).logs()}")
                     
+                    client.containers.get(mavlink_container_id).stop()
+                    client.containers.get(mavlink_container_id).remove()
                     client.containers.get(sitl_container_id).stop()
                     client.containers.get(sitl_container_id).remove()
 
