@@ -29,7 +29,8 @@ def run_containers(client, len):
         print(f"containers: {num} | mavlink_ip: {mavlink_container_ip} | sitl_ip: {sitl_container_ip} | mavproxy_ip: {mavproxy_container_ip}")
 
         containers.setdefault(mavlink_container_id, [mavlink_container_id, sitl_container_id, mavproxy_container_id])
-    
+        time.sleep(1)
+        
     return containers
 
 

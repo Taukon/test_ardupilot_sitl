@@ -1,18 +1,18 @@
 import docker
 import time
 
-def check_container_ip(client, containers, container):
+# def check_container_ip(client, containers, container):
 
-    for v in containers.values():
-        mavlink_ip = client.containers.get(v[0]).attrs['NetworkSettings']['IPAddress']
-        if mavlink_ip == container.attrs['NetworkSettings']['IPAddress']:
-            return False
+#     for v in containers.values():
+#         mavlink_ip = client.containers.get(v[0]).attrs['NetworkSettings']['IPAddress']
+#         if mavlink_ip == container.attrs['NetworkSettings']['IPAddress']:
+#             return False
         
-        sitl_ip = client.containers.get(v[1]).attrs['NetworkSettings']['IPAddress']
-        if sitl_ip == container.attrs['NetworkSettings']['IPAddress']:
-            return False
+#         sitl_ip = client.containers.get(v[1]).attrs['NetworkSettings']['IPAddress']
+#         if sitl_ip == container.attrs['NetworkSettings']['IPAddress']:
+#             return False
         
-    return True
+#     return True
         
 def run_containers(client, len):
 
@@ -22,9 +22,9 @@ def run_containers(client, len):
     for num in range(len):
         mavlink_container_id = client.containers.run("test_mavlink", ["python", "measure_square.py"], detach=True).id
         mavlink_container = client.containers.get(mavlink_container_id)
-        while check_container_ip(client, containers, mavlink_container) == False:
-            mavlink_container_id = client.containers.run("test_mavlink", ["python", "measure_square.py"], detach=True).id
-            mavlink_container = client.containers.get(mavlink_container_id)
+        # while check_container_ip(client, containers, mavlink_container) == False:
+        #     mavlink_container_id = client.containers.run("test_mavlink", ["python", "measure_square.py"], detach=True).id
+        #     mavlink_container = client.containers.get(mavlink_container_id)
 
         # mavlink コンテナのIPアドレスを取得
         mavlink_container_ip = mavlink_container.attrs['NetworkSettings']['IPAddress']
@@ -35,9 +35,9 @@ def run_containers(client, len):
         command = f'bash -c "(SITL_RITW_TERMINAL=bash /ardupilot/Tools/autotest/sim_vehicle.py -v ArduCopter --no-mavproxy &) | .local/bin/mavproxy.py  --out {mavlink_container_ip}:14551 --master tcp:127.0.0.1:5760 --sitl 127.0.0.1:5501"'
         sitl_container_id = client.containers.run("test_ardupilot_sitl_gui", command, tty=True, detach=True).id
         sitl_container = client.containers.get(sitl_container_id)
-        while check_container_ip(client, containers, sitl_container) == False:
-            sitl_container_id = client.containers.run("test_ardupilot_sitl_gui", command, tty=True, detach=True).id
-            sitl_container = client.containers.get(sitl_container_id)
+        # while check_container_ip(client, containers, sitl_container) == False:
+        #     sitl_container_id = client.containers.run("test_ardupilot_sitl_gui", command, tty=True, detach=True).id
+        #     sitl_container = client.containers.get(sitl_container_id)
             
         # sitl コンテナのIPアドレスを取得
         sitl_container_ip = sitl_container.attrs['NetworkSettings']['IPAddress']
@@ -46,7 +46,7 @@ def run_containers(client, len):
 
         print(f"containers: {num} | mavlink_ip: {mavlink_container_ip} | sitl_ip: {sitl_container_ip}")
         containers.setdefault(mavlink_container_id, [mavlink_container_id, sitl_container_id])
-
+        time.sleep(1)
     
     return containers
 
