@@ -1,4 +1,5 @@
 import docker
+import time
 
 def check_container_ip(client, containers, container):
 
@@ -55,6 +56,7 @@ def main():
     len = 30
     print(f"start integrate {len} containers")
 
+    time_start = time.time()
     containers = run_containers(client, len)
 
     # イベントストリームを開始
@@ -102,7 +104,7 @@ def main():
         pass
     finally:
         events.close()
-        print(f"end integrate {len} containers")
+        print(f"end integrate {len} containers. time: {str(time.time() - time_start)}")
             
 
 if __name__ == "__main__":

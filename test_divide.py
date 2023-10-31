@@ -1,4 +1,5 @@
 import docker
+import time
 
 def run_containers(client, len):
 
@@ -37,6 +38,7 @@ def main():
     len = 30
     print(f"start divide {len} containers")
 
+    time_start = time.time()
     containers = run_containers(client, len)
 
     # イベントストリームを開始
@@ -89,7 +91,7 @@ def main():
         pass
     finally:
         events.close()
-        print(f"end divide {len} containers")
+        print(f"end divide {len} containers. time: {str(time.time() - time_start)}")
             
 
 if __name__ == "__main__":
